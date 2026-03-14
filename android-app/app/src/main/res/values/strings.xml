@@ -1,3 +1,27 @@
 <resources>
-    <string name="app_name">AIStudyBuddy</string>
+    <string name="app_name">AI Study Buddy</string>
+    <string name="default_web_client_id">REPLACE_WITH_FIREBASE_WEB_CLIENT_ID</string>
+    <string name="firebase_application_id">REPLACE_WITH_FIREBASE_APP_ID</string>
+    <string name="firebase_api_key">REPLACE_WITH_FIREBASE_API_KEY</string>
+    <string name="firebase_project_id">REPLACE_WITH_FIREBASE_PROJECT_ID</string>
+    <string name="firebase_sender_id">REPLACE_WITH_FIREBASE_SENDER_ID</string>
+    <string name="firebase_storage_bucket">REPLACE_WITH_FIREBASE_STORAGE_BUCKET</string>
+    <string name="welcome_title">Learn faster with your AI study co-pilot</string>
+    <string name="welcome_subtitle">Organize notes, collaborate in study rooms, and ask AI for instant help.</string>
+    <string name="login">Log In</string>
+    <string name="signup">Create Account</string>
+    <string name="email_hint">Academic email</string>
+    <string name="password_hint">Password</string>
+    <string name="confirm_password_hint">Confirm password</string>
+    <string name="google_sign_in">Continue with Google</string>
+    <string name="home">Home</string>
+    <string name="study_rooms">Study Rooms</string>
+    <string name="calendar">Calendar</string>
+    <string name="profile">Profile</string>
+    <string name="dashboard_heading">Your learning hub</string>
+    <string name="dashboard_subheading">Stay on top of notes, collaboration, and revision from one place.</string>
+    <string name="study_rooms_heading">Collaborative sessions</string>
+    <string name="calendar_heading">Today\'s focus plan</string>
+    <string name="profile_heading">Profile</string>
+    <string name="logout">Log Out</string>
 </resources>

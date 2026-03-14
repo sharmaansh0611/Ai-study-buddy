@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="brand_primary">#2153FF</color>
+    <color name="brand_on_primary">#FFFFFF</color>
+    <color name="brand_secondary">#14B8A6</color>
+    <color name="brand_surface">#F5F7FF</color>
+    <color name="brand_surface_variant">#E9EEFF</color>
+    <color name="brand_background">#EEF2FF</color>
+    <color name="brand_text_primary">#16213E</color>
+    <color name="brand_text_secondary">#5B6887</color>
+    <color name="brand_success">#159970</color>
+    <color name="brand_card">#FFFFFFFF</color>
+    <color name="brand_outline">#D8E0F2</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="navigation_item_active">#2153FF</color>
+    <color name="navigation_item_inactive">#7584A5</color>
 </resources>

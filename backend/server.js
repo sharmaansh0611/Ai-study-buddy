@@ -1,22 +1,20 @@
-const express = require("express");
-const cors = require("cors");
-require("dotenv").config();
+import "dotenv/config";
 
-const connectDB = require("./src/config/db");   // ADD THIS
+import cors from "cors";
+import express from "express";
+
+import profileRoutes from "./routes/profileRoutes.js";
 
 const app = express();
-
-connectDB();   // ADD THIS
 
 app.use(cors());
 app.use(express.json());
 
-app.get("/health", (req, res) => {
+app.get("/health", (_req, res) => {
   res.json({ status: "Server running" });
 });
 
-// ADD THIS ROUTE
-app.use("/api", require("./src/routes/healthRoutes"));
+app.use("/profile", profileRoutes);
 
 const PORT = process.env.PORT || 3000;
 
