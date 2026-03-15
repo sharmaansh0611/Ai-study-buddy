@@ -1,24 +1,26 @@
 package com.sharmadipanshu.aistudybuddy.models
 
+import com.google.gson.annotations.SerializedName
+
 data class NotesResponse(
     val notes: List<Note> = emptyList()
 )
 
 data class Note(
-    val id: String,
+    @SerializedName("note_id")
+    val noteId: String,
     val title: String,
-    val subject: String,
-    val updatedAt: String,
-    val fileUrl: String? = null
-)
-
-data class UploadNotesRequest(
-    val title: String,
-    val subject: String,
-    val fileUrl: String
+    @SerializedName("file_url")
+    val fileUrl: String,
+    @SerializedName("created_at")
+    val createdAt: String
 )
 
 data class UploadNotesResponse(
-    val success: Boolean,
-    val message: String
+    val message: String,
+    @SerializedName("note_id")
+    val noteId: String,
+    val title: String,
+    @SerializedName("file_url")
+    val fileUrl: String
 )

@@ -1,13 +1,22 @@
-const express = require("express");
+import { Router } from "express";
 
-const verifyFirebaseToken = require("../middleware/verifyFirebaseToken");
-const notesController = require("../controllers/notesController");
+import {
+  getMyNotes,
+  handleUploadError,
+  uploadNote,
+} from "../controllers/notesController.js";
+import verifyFirebaseToken from "../middleware/verifyFirebaseToken.js";
+import upload from "../utils/upload.js";
 
-const router = express.Router();
+const router = Router();
 
-router.use(verifyFirebaseToken);
+router.get("/my-notes", verifyFirebaseToken, getMyNotes);
+router.post(
+  "/upload-note",
+  verifyFirebaseToken,
+  upload.single("file"),
+  handleUploadError,
+  uploadNote
+);
 
-router.get("/", notesController.getUserNotes);
-router.post("/upload", notesController.uploadNote);
-
-module.exports = router;
+export default router;

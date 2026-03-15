@@ -4,23 +4,30 @@ import com.sharmadipanshu.aistudybuddy.models.AiQueryRequest
 import com.sharmadipanshu.aistudybuddy.models.AiQueryResponse
 import com.sharmadipanshu.aistudybuddy.models.NotesResponse
 import com.sharmadipanshu.aistudybuddy.models.StudyRoomsResponse
-import com.sharmadipanshu.aistudybuddy.models.UploadNotesRequest
 import com.sharmadipanshu.aistudybuddy.models.UploadNotesResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 
 interface ApiService {
 
     @GET(".")
     suspend fun getApiStatus(): Response<Map<String, String>>
 
-    @GET("notes")
+    @GET("my-notes")
     suspend fun fetchNotes(): Response<NotesResponse>
 
-    @POST("notes/upload")
-    suspend fun uploadNotes(@Body request: UploadNotesRequest): Response<UploadNotesResponse>
+    @Multipart
+    @POST("upload-note")
+    suspend fun uploadNotes(
+        @Part file: MultipartBody.Part,
+        @Part("title") title: RequestBody
+    ): Response<UploadNotesResponse>
 
     @POST("ai/ask")
     suspend fun askAi(@Body request: AiQueryRequest): Response<AiQueryResponse>

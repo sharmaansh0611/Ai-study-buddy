@@ -1,30 +1,25 @@
-const admin = require("../config/firebaseAdmin");
+import admin from "../../config/firebase.js";
 
-async function verifyFirebaseToken(req, res, next) {
+const verifyFirebaseToken = async (req, res, next) => {
   const authorizationHeader = req.headers.authorization;
 
   if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Missing or invalid Authorization header." });
+    return res.status(401).json({ message: "Unauthorized: missing bearer token." });
   }
 
-  const idToken = authorizationHeader.split("Bearer ")[1]?.trim();
-  if (!idToken) {
-    return res.status(401).json({ message: "Firebase ID token is required." });
+  const token = authorizationHeader.substring("Bearer ".length).trim();
+
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized: Firebase ID token is required." });
   }
 
   try {
-    // Verify the Firebase ID token and expose the decoded identity to downstream handlers.
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
-    req.user = {
-      uid: decodedToken.uid,
-      email: decodedToken.email || null,
-      name: decodedToken.name || null,
-    };
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    req.user = decodedToken;
     next();
   } catch (error) {
-    console.error("Firebase token verification failed:", error.message);
-    return res.status(401).json({ message: "Unauthorized: invalid Firebase token." });
+    return res.status(401).json({ message: "Unauthorized: invalid Firebase ID token." });
   }
-}
+};
 
-module.exports = verifyFirebaseToken;
+export default verifyFirebaseToken;

@@ -24,4 +24,9 @@
     <string name="calendar_heading">Today\'s focus plan</string>
     <string name="profile_heading">Profile</string>
     <string name="logout">Log Out</string>
+    <string name="upload_notes_heading">Upload study material</string>
+    <string name="my_notes_heading">My Notes</string>
+    <string name="choose_pdf">Choose PDF</string>
+    <string name="upload_note">Upload Note</string>
+    <string name="note_title">Note title</string>
 </resources>

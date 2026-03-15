@@ -15,6 +15,12 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.AIStudyBuddy">
         <activity
+            android:name=".activities.MyNotesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.UploadNotesActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.SignupActivity"
             android:exported="false" />
         <activity

@@ -5,10 +5,14 @@ import com.sharmadipanshu.aistudybuddy.models.AiQueryResponse
 import com.sharmadipanshu.aistudybuddy.models.ApiResult
 import com.sharmadipanshu.aistudybuddy.models.Note
 import com.sharmadipanshu.aistudybuddy.models.StudyRoom
-import com.sharmadipanshu.aistudybuddy.models.UploadNotesRequest
 import com.sharmadipanshu.aistudybuddy.models.UploadNotesResponse
 import com.sharmadipanshu.aistudybuddy.network.ApiService
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,11 +27,16 @@ class StudyRepository @Inject constructor(
             mapper = { response -> response.notes }
         )
 
-    suspend fun uploadNotes(request: UploadNotesRequest): ApiResult<UploadNotesResponse> =
-        apiCall(
-            request = { apiService.uploadNotes(request) },
+    suspend fun uploadNotes(title: String, pdfFile: File): ApiResult<UploadNotesResponse> {
+        val titleBody = title.toRequestBody("text/plain".toMediaType())
+        val fileBody = pdfFile.asRequestBody("application/pdf".toMediaType())
+        val multipartFile = MultipartBody.Part.createFormData("file", pdfFile.name, fileBody)
+
+        return apiCall(
+            request = { apiService.uploadNotes(multipartFile, titleBody) },
             mapper = { response -> response }
         )
+    }
 
     suspend fun askAi(request: AiQueryRequest): ApiResult<AiQueryResponse> =
         apiCall(
