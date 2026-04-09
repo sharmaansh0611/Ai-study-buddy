@@ -1,4 +1,4 @@
-async function getStudyRooms(req, res) {
+export async function getStudyRooms(req, res) {
   return res.json({
     rooms: [
       {
@@ -12,7 +12,3 @@ async function getStudyRooms(req, res) {
     ],
   });
 }
-
-module.exports = {
-  getStudyRooms,
-};

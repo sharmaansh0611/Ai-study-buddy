@@ -64,6 +64,8 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
+    implementation("com.github.DImuthuUpe:AndroidPdfViewer:3.1.0-beta.1")
+    implementation("com.tom-roush:pdfbox-android:2.0.27.0")
     kapt(libs.hilt.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

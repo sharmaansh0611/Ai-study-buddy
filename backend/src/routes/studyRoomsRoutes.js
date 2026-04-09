@@ -1,12 +1,11 @@
-const express = require("express");
+import { Router } from "express";
 
-const verifyFirebaseToken = require("../middleware/verifyFirebaseToken");
-const studyRoomsController = require("../controllers/studyRoomsController");
+import verifyFirebaseToken from "../middleware/verifyFirebaseToken.js";
+import { getStudyRooms } from "../controllers/studyRoomsController.js";
 
-const router = express.Router();
+const router = Router();
 
 router.use(verifyFirebaseToken);
+router.get("/", getStudyRooms);
 
-router.get("/", studyRoomsController.getStudyRooms);
-
-module.exports = router;
+export default router;

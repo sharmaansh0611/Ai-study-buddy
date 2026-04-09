@@ -10,12 +10,15 @@ import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import com.sharmadipanshu.aistudybuddy.activities.AskAiActivity
 import com.sharmadipanshu.aistudybuddy.activities.MyNotesActivity
+import com.sharmadipanshu.aistudybuddy.activities.StudyToolsActivity
 import com.sharmadipanshu.aistudybuddy.activities.UploadNotesActivity
 import com.sharmadipanshu.aistudybuddy.adapters.DashboardAdapter
 import com.sharmadipanshu.aistudybuddy.databinding.FragmentHomeBinding
 import com.sharmadipanshu.aistudybuddy.models.DashboardItem
 import com.sharmadipanshu.aistudybuddy.viewmodels.HomeViewModel
+import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -58,6 +61,10 @@ class HomeFragment : Fragment() {
         when (item.title) {
             "Upload Notes" -> startActivity(Intent(requireContext(), UploadNotesActivity::class.java))
             "My Notes" -> startActivity(Intent(requireContext(), MyNotesActivity::class.java))
+            "Ask AI" -> startActivity(Intent(requireContext(), AskAiActivity::class.java))
+            "Quizzes" -> startActivity(Intent(requireContext(), StudyToolsActivity::class.java))
+            "Study Rooms" -> findNavController().navigate(com.sharmadipanshu.aistudybuddy.R.id.studyRoomsFragment)
+            "Calendar" -> findNavController().navigate(com.sharmadipanshu.aistudybuddy.R.id.calendarFragment)
             else -> Toast.makeText(requireContext(), "${item.title} coming soon", Toast.LENGTH_SHORT)
                 .show()
         }

@@ -24,7 +24,31 @@ const noteSchema = new mongoose.Schema(
     },
     text_content: {
       type: String,
-      required: true,
+      default: "",
+    },
+    indexed: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    indexing: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    index_status: {
+      type: String,
+      enum: ["pending", "ready", "failed"],
+      default: "pending",
+      index: true,
+    },
+    indexed_at: {
+      type: Date,
+      default: null,
+    },
+    last_index_error: {
+      type: String,
+      default: null,
     },
     created_at: {
       type: Date,

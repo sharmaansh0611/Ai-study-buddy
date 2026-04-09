@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import {
+  deleteNote,
   getMyNotes,
   handleUploadError,
   uploadNote,
@@ -11,6 +12,7 @@ import upload from "../utils/upload.js";
 const router = Router();
 
 router.get("/my-notes", verifyFirebaseToken, getMyNotes);
+router.delete("/notes/:id", verifyFirebaseToken, deleteNote);
 router.post(
   "/upload-note",
   verifyFirebaseToken,

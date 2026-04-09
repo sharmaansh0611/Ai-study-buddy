@@ -12,6 +12,8 @@ data class Note(
     val title: String,
     @SerializedName("file_url")
     val fileUrl: String,
+    @SerializedName("index_status")
+    val indexStatus: String = "pending",
     @SerializedName("created_at")
     val createdAt: String
 )
@@ -22,5 +24,13 @@ data class UploadNotesResponse(
     val noteId: String,
     val title: String,
     @SerializedName("file_url")
-    val fileUrl: String
+    val fileUrl: String,
+    @SerializedName("index_status")
+    val indexStatus: String = "pending"
+)
+
+data class DeleteNoteResponse(
+    val message: String,
+    @SerializedName("note_id")
+    val noteId: String
 )
