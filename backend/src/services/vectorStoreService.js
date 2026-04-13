@@ -8,13 +8,26 @@ const VECTOR_SEARCH_NUM_CANDIDATES = Number(
   process.env.MONGODB_VECTOR_NUM_CANDIDATES || 100
 );
 const USE_VECTOR_SEARCH = process.env.MONGODB_USE_VECTOR_SEARCH === "true";
+const DEFAULT_TOP_K = Number(process.env.RAG_TOP_K || 6);
+
+const normalizeQuestion = (question = "") =>
+  question
+    .trim()
+    .replace(/\s+/g, " ")
+    .replace(/[“”]/g, "\"")
+    .replace(/[‘’]/g, "'")
+    .toLowerCase();
+
+const extractSectionRefs = (text = "") => {
+  const matches = text.match(/\b\d+(?:\.\d+)+\b/g);
+  return matches ? [...new Set(matches)] : [];
+};
 
 const tokenizeQuestion = (question = "") =>
-  question
-    .toLowerCase()
+  normalizeQuestion(question)
     .split(/[^a-z0-9]+/i)
     .map((token) => token.trim())
-    .filter((token) => token.length > 2);
+    .filter((token) => token.length > 1);
 
 const scoreByKeywordOverlap = (chunkText = "", tokens = []) => {
   if (!tokens.length) {
@@ -95,9 +108,11 @@ export const retrieveRelevantChunks = async ({
   userId,
   question,
   noteId,
-  limit = Number(process.env.RAG_TOP_K || 5),
+  limit = DEFAULT_TOP_K,
 }) => {
   console.log("Vector search started");
+  const normalizedQuestion = normalizeQuestion(question);
+  const sectionRefs = extractSectionRefs(question);
   const chunkQuery = {
     user_id: userId,
   };
@@ -108,7 +123,7 @@ export const retrieveRelevantChunks = async ({
 
   if (USE_VECTOR_SEARCH) {
     try {
-      const queryEmbedding = await createEmbedding(question);
+      const queryEmbedding = await createEmbedding(normalizedQuestion);
       const vectorFilter = noteId
         ? { user_id: userId, note_id: noteId }
         : { user_id: userId };
@@ -131,6 +146,7 @@ export const retrieveRelevantChunks = async ({
             page_number: 1,
             chunk_text: 1,
             score: { $meta: "vectorSearchScore" },
+            section_refs: 1,
           },
         },
       ]);
@@ -157,34 +173,53 @@ export const retrieveRelevantChunks = async ({
   }
 
   try {
-    const queryEmbedding = await createEmbedding(question);
+    const queryEmbedding = await createEmbedding(normalizedQuestion);
     const localVectorResults = candidateChunks
       .map((chunk) => ({
         ...chunk,
         score: cosineSimilarity(queryEmbedding, chunk.embedding),
+        keywordScore: scoreByKeywordOverlap(chunk.chunk_text, tokenizeQuestion(normalizedQuestion)),
+        sectionScore: sectionRefs.some((sectionRef) =>
+          (chunk.section_refs || []).includes(sectionRef)
+        )
+          ? 1
+          : 0,
       }))
-      .sort((left, right) => right.score - left.score)
+      .map((chunk) => ({
+        ...chunk,
+        hybridScore: chunk.score * 0.75 + Math.min(chunk.keywordScore, 6) * 0.08 + chunk.sectionScore,
+      }))
+      .sort((left, right) => right.hybridScore - left.hybridScore)
       .slice(0, limit);
 
-    console.log("Chunks retrieved");
-    console.log(`Local vector fallback results: ${localVectorResults.length}`);
+      console.log("Chunks retrieved");
+      console.log(`Local vector fallback results: ${localVectorResults.length}`);
 
-    return localVectorResults;
+      return localVectorResults;
   } catch (embeddingError) {
     console.error(
       "Vector embedding search failed, falling back to keyword retrieval:",
       embeddingError.message
     );
 
-    const questionTokens = tokenizeQuestion(question);
-    const fallbackResults = candidateChunks
-      .map((chunk) => ({
-        ...chunk,
-        score: scoreByKeywordOverlap(chunk.chunk_text, questionTokens),
-      }))
-      .filter((chunk) => chunk.score > 0)
-      .sort((left, right) => right.score - left.score)
-      .slice(0, limit);
+      const questionTokens = tokenizeQuestion(normalizedQuestion);
+      const fallbackResults = candidateChunks
+        .map((chunk) => ({
+          ...chunk,
+          score: scoreByKeywordOverlap(chunk.chunk_text, questionTokens),
+          sectionScore: sectionRefs.some((sectionRef) =>
+            (chunk.section_refs || []).includes(sectionRef)
+          )
+            ? 1
+            : 0,
+        }))
+        .map((chunk) => ({
+          ...chunk,
+          hybridScore: chunk.score + chunk.sectionScore * 5,
+        }))
+        .filter((chunk) => chunk.hybridScore > 0)
+        .sort((left, right) => right.hybridScore - left.hybridScore)
+        .slice(0, limit);
 
     console.log("Chunks retrieved");
     console.log(`Keyword fallback results: ${fallbackResults.length}`);

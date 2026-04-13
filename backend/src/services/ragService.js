@@ -11,7 +11,7 @@ const buildContextBlock = (chunks) =>
 
 export const buildRagPrompt = ({ question, chunks }) => ({
   system:
-    "You are an offline AI study assistant. Use only the provided study notes. If the answer is not in the notes, say that clearly and suggest what the student should review next.",
+    "You are an offline AI study assistant. Use only the provided study notes. Prefer chunks that directly match the requested section heading, clause number, or terminology. If the answer is not in the notes, say that clearly and suggest what the student should review next.",
   user: `Use the following study notes to answer the question.
 
 Context:
@@ -20,7 +20,7 @@ ${buildContextBlock(chunks)}
 Question:
 ${question}
 
-Answer clearly using only the provided context.`,
+Answer clearly using only the provided context. If the question mentions a numbered section such as 11.01, prioritize that exact section.`,
 });
 
 export const buildSelectedTextPrompt = ({ question, selectedText, pageNumber }) => ({

@@ -31,6 +31,10 @@ const noteChunkSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    section_refs: {
+      type: [String],
+      default: [],
+    },
     embedding: {
       type: [Number],
       required: true,

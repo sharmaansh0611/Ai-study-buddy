@@ -1,7 +1,33 @@
-const DEFAULT_CHUNK_SIZE = 700;
-const DEFAULT_CHUNK_OVERLAP = 100;
+const DEFAULT_CHUNK_SIZE = 450;
+const DEFAULT_CHUNK_OVERLAP = 80;
 
 const normalizePageText = (text = "") => text.replace(/\s+/g, " ").trim();
+const sectionPattern = /(?:^|\s)(\d+(?:\.\d+)+)(?=\s|$)/g;
+
+const splitPageIntoBlocks = (pageText = "") => {
+  const normalized = pageText.replace(/\r\n/g, "\n");
+  const paragraphCandidates = normalized
+    .split(/\n{2,}/)
+    .map((paragraph) => normalizePageText(paragraph))
+    .filter(Boolean);
+
+  if (paragraphCandidates.length > 1) {
+    return paragraphCandidates;
+  }
+
+  return normalized
+    .split(/(?<=\.)\s+(?=[A-Z0-9])/)
+    .map((sentenceGroup) => normalizePageText(sentenceGroup))
+    .filter(Boolean);
+};
+
+const extractSectionRefs = (text = "") => {
+  const refs = new Set();
+  for (const match of text.matchAll(sectionPattern)) {
+    refs.add(match[1]);
+  }
+  return [...refs];
+};
 
 export const splitTextIntoPages = (text = "") => {
   const normalized = text.replace(/\r\n/g, "\n").trim();
@@ -42,26 +68,65 @@ export const chunkNoteText = ({
   let chunkIndex = 0;
 
   pages.forEach(({ page_number, page_text }) => {
-    // Character-window chunking keeps the implementation simple and predictable for note uploads.
-    for (let start = 0; start < page_text.length; start += step) {
-      const chunkText = page_text.slice(start, start + effectiveChunkSize).trim();
+    const blocks = splitPageIntoBlocks(page_text);
+    let currentChunk = "";
 
-      if (!chunkText) {
-        continue;
+    blocks.forEach((block) => {
+      const proposedChunk = currentChunk ? `${currentChunk} ${block}` : block;
+
+      if (proposedChunk.length <= effectiveChunkSize) {
+        currentChunk = proposedChunk;
+        return;
       }
 
+      if (currentChunk) {
+        chunks.push({
+          note_id: noteId,
+          page_number,
+          chunk_index: chunkIndex,
+          chunk_text: currentChunk,
+          section_refs: extractSectionRefs(currentChunk),
+        });
+        chunkIndex += 1;
+      }
+
+      if (block.length <= effectiveChunkSize) {
+        currentChunk = block;
+        return;
+      }
+
+      for (let start = 0; start < block.length; start += step) {
+        const chunkText = block.slice(start, start + effectiveChunkSize).trim();
+
+        if (!chunkText) {
+          continue;
+        }
+
+        chunks.push({
+          note_id: noteId,
+          page_number,
+          chunk_index: chunkIndex,
+          chunk_text: chunkText,
+          section_refs: extractSectionRefs(chunkText),
+        });
+        chunkIndex += 1;
+
+        if (start + effectiveChunkSize >= block.length) {
+          currentChunk = "";
+          break;
+        }
+      }
+    });
+
+    if (currentChunk) {
       chunks.push({
         note_id: noteId,
         page_number,
         chunk_index: chunkIndex,
-        chunk_text: chunkText,
+        chunk_text: currentChunk,
+        section_refs: extractSectionRefs(currentChunk),
       });
-
       chunkIndex += 1;
-
-      if (start + effectiveChunkSize >= page_text.length) {
-        break;
-      }
     }
   });
 
