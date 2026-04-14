@@ -3,10 +3,12 @@ package com.sharmadipanshu.aistudybuddy.activities
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.R
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sharmadipanshu.aistudybuddy.adapters.NotesAdapter
 import com.sharmadipanshu.aistudybuddy.databinding.ActivityMyNotesBinding
@@ -16,6 +18,10 @@ import com.sharmadipanshu.aistudybuddy.utils.UiState
 import com.sharmadipanshu.aistudybuddy.viewmodels.MyNotesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.activity.enableEdgeToEdge
+
 @AndroidEntryPoint
 class MyNotesActivity : AppCompatActivity() {
 
@@ -24,9 +30,18 @@ class MyNotesActivity : AppCompatActivity() {
     private val notesAdapter = NotesAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         binding = ActivityMyNotesBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.title = getString(com.sharmadipanshu.aistudybuddy.R.string.my_notes_heading)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         binding.toolbar.setNavigationOnClickListener { finish() }
         binding.recyclerNotes.layoutManager = LinearLayoutManager(this)

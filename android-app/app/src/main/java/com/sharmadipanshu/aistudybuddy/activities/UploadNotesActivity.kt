@@ -35,6 +35,8 @@ class UploadNotesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityUploadNotesBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.title = getString(com.sharmadipanshu.aistudybuddy.R.string.upload_note)
 
         setupToolbar()
         setupListeners()

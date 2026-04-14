@@ -25,6 +25,8 @@ class StudyToolsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityStudyToolsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.title = getString(com.sharmadipanshu.aistudybuddy.R.string.study_tools)
 
         binding.toolbar.setNavigationOnClickListener { finish() }
         binding.recyclerQuiz.layoutManager = LinearLayoutManager(this)
