@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_ask_ai"
+        android:title="Ask AI"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_make_notes"
+        android:title="Make Notes"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_make_quiz"
+        android:title="Make Quiz"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_make_flashcards"
+        android:title="Make Flashcards"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_make_summary"
+        android:title="Make Summary"
+        app:showAsAction="never" />
+</menu>

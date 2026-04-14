@@ -56,9 +56,4 @@
     <string name="no_readable_text_on_page">No readable text was found on this page. Scanned PDFs may require OCR.</string>
     <string name="study_tools">Study Tools</string>
     <string name="general_ai_coming_soon">General AI assistant is coming soon. Offline note-based AI is available from My Notes and Study Tools.</string>
-    <string name="popup_copy">Copy</string>
-    <string name="popup_ask_ai">Ask AI</string>
-    <string name="popup_make_notes">Make Notes</string>
-    <string name="popup_make_quiz">Make Quiz</string>
-    <string name="popup_make_flashcard">Make Flashcard</string>
 </resources>

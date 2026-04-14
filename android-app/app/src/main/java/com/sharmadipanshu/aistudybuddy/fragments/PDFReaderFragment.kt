@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ActionMode
+import android.view.Menu
+import android.view.MenuItem
 import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
@@ -25,6 +27,7 @@ import androidx.webkit.WebViewAssetLoader.AssetsPathHandler
 import com.sharmadipanshu.aistudybuddy.activities.AskAiActivity
 import com.sharmadipanshu.aistudybuddy.activities.StudyToolsActivity
 import com.sharmadipanshu.aistudybuddy.databinding.FragmentPdfReaderBinding
+import com.sharmadipanshu.aistudybuddy.fragments.StudyResultsBottomSheetFragment
 import com.sharmadipanshu.aistudybuddy.models.PDFDocument
 import com.sharmadipanshu.aistudybuddy.utils.UiState
 import com.sharmadipanshu.aistudybuddy.viewmodels.AIInteractionViewModel
@@ -42,8 +45,6 @@ class PDFReaderFragment : Fragment() {
     private val viewModel: PDFReaderViewModel by activityViewModels()
     private val aiInteractionViewModel: AIInteractionViewModel by activityViewModels()
 
-    // Keep reference to the active popup to ensure only one shows at a time
-    private var textSelectionPopup: PopupWindow? = null
     private lateinit var currentDocument: PDFDocument
 
     /**
@@ -81,12 +82,8 @@ class PDFReaderFragment : Fragment() {
 
         setupWebView()
         observeViewModel()
+        setupToolbar()
         
-        // Hide popup when the user starts scrolling the WebView bounding box
-        binding.pdfWebView.setOnScrollChangeListener { _, _, _, _, _ ->
-            textSelectionPopup?.dismiss()
-        }
-
         binding.fabAskAi.setOnClickListener {
             startActivity(
                 AskAiActivity.createIntent(
@@ -147,9 +144,6 @@ class PDFReaderFragment : Fragment() {
         }
 
         binding.pdfWebView.apply {
-            // Re-attach JavaScript bridge before loading
-            addJavascriptInterface(WebAppInterface(), "Android")
-
             webViewClient = object : WebViewClient() {
                 override fun shouldInterceptRequest(
                     view: WebView,
@@ -159,13 +153,52 @@ class PDFReaderFragment : Fragment() {
         }
     }
 
+    private fun setupToolbar() {
+        binding.toolbar.apply {
+            title = currentDocument.title
+            setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
+
+            inflateMenu(com.sharmadipanshu.aistudybuddy.R.menu.menu_pdf_reader)
+            setOnMenuItemClickListener { menuItem ->
+                handleMenuItemClick(menuItem.itemId)
+                true
+            }
+        }
+    }
+
+    private fun handleMenuItemClick(itemId: Int) {
+        binding.pdfWebView.evaluateJavascript("window.getSelection().toString()") { selectedText ->
+            val cleanText = selectedText?.trim('"')?.trim()
+
+            if (cleanText.isNullOrBlank()) {
+                Toast.makeText(context, "Please select some text in the PDF first", Toast.LENGTH_SHORT).show()
+                return@evaluateJavascript
+            }
+
+            when (itemId) {
+                com.sharmadipanshu.aistudybuddy.R.id.action_ask_ai -> {
+                    startActivity(
+                        AskAiActivity.createIntent(
+                            context = requireContext(),
+                            noteId = currentDocument.noteId,
+                            title = currentDocument.title,
+                            initialText = cleanText
+                        )
+                    )
+                }
+                com.sharmadipanshu.aistudybuddy.R.id.action_make_notes,
+                com.sharmadipanshu.aistudybuddy.R.id.action_make_quiz,
+                com.sharmadipanshu.aistudybuddy.R.id.action_make_flashcards,
+                com.sharmadipanshu.aistudybuddy.R.id.action_make_summary -> {
+                    openStudyToolsWithText(cleanText)
+                }
+            }
+        }
+    }
+
     // ── ViewModel observation ─────────────────────────────────────────────────
 
     private fun observeViewModel() {
-        viewModel.documentTitle.observe(viewLifecycleOwner) { title ->
-            binding.textFileName.text = title
-        }
-
         viewModel.pdfFileState.observe(viewLifecycleOwner) { state ->
             binding.progressBar.isVisible = state is UiState.Loading
             binding.textError.isVisible   = state is UiState.Error
@@ -238,128 +271,9 @@ class PDFReaderFragment : Fragment() {
     }
 
     // ── Inner classes ─────────────────────────────────────────────────────────
+    // Bottom sheet invocation removed
 
-    inner class WebAppInterface {
-        /**
-         * Called from viewer.html when text is selected.
-         * The coordinates (x, y) are the CSS coordinates of the top-left of the bounding box
-         * of the selected text relative to the WebView canvas.
-         */
-        @Suppress("unused")
-        @JavascriptInterface
-        fun onTextSelected(text: String, x: Float, y: Float) {
-            Log.d(TAG, "Text selected (x=$x, y=$y): ${text.take(40)}…")
-            
-            requireActivity().runOnUiThread {
-                Toast.makeText(context, "Text Selected", Toast.LENGTH_SHORT).show()
-                aiInteractionViewModel.updateContextText(text)
-                showFloatingToolbar(text, x, y)
-            }
-        }
-    }
 
-    /**
-     * Spawns a floating PopupWindow near the selected text in Android UI coordinates.
-     */
-    private fun showFloatingToolbar(selectedText: String, webX: Float, webY: Float) {
-        if (!isAdded) return
-        
-        // Dismiss existing
-        textSelectionPopup?.dismiss()
-        
-        // Inflate the custom popup layout
-        val popupView = layoutInflater.inflate(com.sharmadipanshu.aistudybuddy.R.layout.popup_text_selection, null)
-        
-        val popupWindow = PopupWindow(
-            popupView,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            true // Focusable so it intercepts clicks outside to dismiss implicitly
-        )
-        // Adjust elevation explicitly for older SDKs if cardView elevation clip fails
-        popupWindow.elevation = 16f
-        
-        // Bind buttons
-        popupView.findViewById<TextView>(com.sharmadipanshu.aistudybuddy.R.id.btnCopy).setOnClickListener {
-            popupWindow.dismiss()
-            copyToClipboard(selectedText)
-            Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show()
-        }
-
-        popupView.findViewById<TextView>(com.sharmadipanshu.aistudybuddy.R.id.btnAskAi).setOnClickListener {
-            popupWindow.dismiss()
-            startActivity(
-                AskAiActivity.createIntent(
-                    context = requireContext(),
-                    noteId = currentDocument.noteId,
-                    title = currentDocument.title,
-                    initialText = selectedText
-                )
-            )
-        }
-
-        popupView.findViewById<TextView>(com.sharmadipanshu.aistudybuddy.R.id.btnMakeNotes).setOnClickListener {
-            popupWindow.dismiss()
-            openStudyToolsWithText(selectedText)
-        }
-
-        popupView.findViewById<TextView>(com.sharmadipanshu.aistudybuddy.R.id.btnMakeQuiz).setOnClickListener {
-            popupWindow.dismiss()
-            openStudyToolsWithText(selectedText)
-        }
-
-        popupView.findViewById<TextView>(com.sharmadipanshu.aistudybuddy.R.id.btnMakeFlashcard).setOnClickListener {
-            popupWindow.dismiss()
-            openStudyToolsWithText(selectedText)
-        }
-
-        // PDF.js selection coordinates are already in CSS pixels, so do not
-        // multiply by density again or the popup will be placed off-screen.
-        val selectionX = webX.toInt()
-        val selectionY = webY.toInt()
-
-        // Get WebView's absolute position in the window to account for toolbars/offsets
-        val webViewPos = IntArray(2)
-        binding.pdfWebView.getLocationInWindow(webViewPos)
-        
-        // Calculate the absolute window coordinates
-        val absoluteX = webViewPos[0] + selectionX
-        val absoluteY = webViewPos[1] + selectionY
-        
-        // Measure popup to center it horizontally above the selection
-        popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        val popupWidth = popupView.measuredWidth
-        val popupHeight = popupView.measuredHeight
-
-        val visibleFrame = Rect().also {
-            requireActivity().window.decorView.getWindowVisibleDisplayFrame(it)
-        }
-        val maxPopupWidth = (visibleFrame.width() - resources.displayMetrics.density.times(16).toInt()).coerceAtLeast(1)
-        popupWindow.width = popupWidth.coerceAtMost(maxPopupWidth)
-        
-        // finalX centered horizontally, ensure it stays on screen
-        val finalX = (absoluteX - (popupWidth / 2)).coerceIn(
-            visibleFrame.left,
-            (visibleFrame.right - popupWidth).coerceAtLeast(visibleFrame.left)
-        )
-        
-        // finalY positioned above selection. If too high, show below.
-        val yOffset = -20 // Small gap
-        var finalY = absoluteY - popupHeight + yOffset
-        if (finalY < visibleFrame.top) { // If it would be hidden by status bar
-            finalY = absoluteY + 40 // Show below instead
-        }
-
-        finalY = finalY.coerceIn(
-            visibleFrame.top,
-            (visibleFrame.bottom - popupHeight).coerceAtLeast(visibleFrame.top)
-        )
-        
-        this.textSelectionPopup = popupWindow
-        
-        // Show at calculated location relative to window
-        popupWindow.showAtLocation(requireActivity().window.decorView, android.view.Gravity.NO_GRAVITY, finalX, finalY)
-    }
 
     private fun openStudyToolsWithText(text: String) {
         val intent = android.content.Intent(requireContext(), StudyToolsActivity::class.java).apply {
@@ -368,11 +282,7 @@ class PDFReaderFragment : Fragment() {
         startActivity(intent)
     }
 
-    private fun copyToClipboard(text: String) {
-        val clipboard = requireContext().getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-        val clip = android.content.ClipData.newPlainText("Copied Text", text)
-        clipboard.setPrimaryClip(clip)
-    }
+
 
     /**
      * Custom path handler that serves PDF files from [cacheDir].
@@ -406,8 +316,6 @@ class PDFReaderFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        textSelectionPopup?.dismiss()
-        textSelectionPopup = null
 
         // Prevent WebView memory leaks
         binding.pdfWebView.apply {

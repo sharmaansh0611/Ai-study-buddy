@@ -11,20 +11,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/brand_background"
-        android:titleTextColor="@color/brand_text_primary"
+        app:titleCentered="true"
+        app:titleTextAppearance="@style/TextAppearance.Material3.TitleLarge"
+        app:titleTextColor="@color/brand_text_primary"
+        app:navigationIcon="@drawable/ic_back_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/textFileName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/brand_text_primary"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-    </com.google.android.material.appbar.MaterialToolbar>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!--
         Fullscreen WebView — PDF.js renders inside here via WebViewAssetLoader.

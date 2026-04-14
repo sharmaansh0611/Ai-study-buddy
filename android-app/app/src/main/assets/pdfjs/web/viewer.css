@@ -2,11 +2,13 @@
 :root {
   --brand-color: #2563EB;
   --bg-color: #F8FAFC;
-  --nav-bg: rgba(15, 23, 42, 0.85); /* Sleek dark bar */
+  --nav-bg: rgba(15, 23, 42, 0.85);
+  /* Sleek dark bar */
   --nav-text: #FFFFFF;
 }
 
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
   background-color: var(--bg-color);
@@ -18,7 +20,8 @@ body, html {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 12px 12px 100px 12px; /* Bottom padding for the nav bar */
+  padding: 12px 12px 100px 12px;
+  /* Bottom padding for the nav bar */
 }
 
 /* ── Page Styles ────────────────────────────────── */
@@ -50,10 +53,10 @@ body, html {
   right: 0;
   bottom: 0;
   overflow: hidden;
-  opacity: 1.0; /* Keep it interactive */
+  opacity: 1.0;
+  /* Keep it interactive */
   line-height: 1.0;
   pointer-events: auto;
-  -webkit-touch-callout: none; /* Disable system selection menu */
   -webkit-user-select: text;
   user-select: text;
 }
@@ -64,7 +67,8 @@ body, html {
   white-space: pre;
   cursor: text;
   transform-origin: 0% 0%;
-  -webkit-touch-callout: none; /* Inherit suppression */
+  -webkit-touch-callout: none;
+  /* Inherit suppression */
 }
 
 ::selection {
@@ -165,7 +169,9 @@ body, html {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 #loadingMessage {
