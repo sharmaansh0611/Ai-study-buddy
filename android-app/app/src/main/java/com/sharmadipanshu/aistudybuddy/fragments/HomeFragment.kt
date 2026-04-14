@@ -53,7 +53,9 @@ class HomeFragment : Fragment() {
         }
 
         viewModel.dashboardItems.observe(viewLifecycleOwner) { dashboardAdapter.submitList(it) }
+        viewModel.userName.observe(viewLifecycleOwner) { binding.textUserName.text = it }
         viewModel.apiStatus.observe(viewLifecycleOwner) { binding.textApiStatus.text = it }
+        viewModel.loadUserName()
         viewModel.refreshApiStatus()
     }
 

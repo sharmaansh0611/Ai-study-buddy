@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="12dp"
-            android:background="#E4E8F5" />
+            android:background="@color/brand_outline" />
 
         <TextView
             android:layout_width="match_parent"

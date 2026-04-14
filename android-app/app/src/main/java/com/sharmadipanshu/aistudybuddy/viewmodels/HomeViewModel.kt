@@ -8,13 +8,15 @@ import com.sharmadipanshu.aistudybuddy.R
 import com.sharmadipanshu.aistudybuddy.models.ApiResult
 import com.sharmadipanshu.aistudybuddy.models.DashboardItem
 import com.sharmadipanshu.aistudybuddy.repository.StudyRepository
+import com.sharmadipanshu.aistudybuddy.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val studyRepository: StudyRepository
+    private val studyRepository: StudyRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _dashboardItems = MutableLiveData(
@@ -31,6 +33,21 @@ class HomeViewModel @Inject constructor(
 
     private val _apiStatus = MutableLiveData("Connecting to your learning workspace...")
     val apiStatus: LiveData<String> = _apiStatus
+
+    private val _userName = MutableLiveData("Learner")
+    val userName: LiveData<String> = _userName
+
+    fun loadUserName() {
+        viewModelScope.launch {
+            runCatching {
+                userRepository.getResolvedCurrentUserName()
+            }.onSuccess { name ->
+                if (name.isNotBlank()) {
+                    _userName.value = name
+                }
+            }
+        }
+    }
 
     fun refreshApiStatus() {
         viewModelScope.launch {

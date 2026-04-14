@@ -4,68 +4,77 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="4dp"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="7dp"
     android:layout_marginEnd="4dp"
-    android:layout_marginBottom="8dp"
+    android:layout_marginBottom="7dp"
     android:foreground="?attr/selectableItemBackground"
     app:cardBackgroundColor="@color/brand_card"
     app:cardCornerRadius="20dp"
-    app:cardElevation="2dp"
+    app:cardElevation="3dp"
     app:strokeColor="@color/brand_outline"
     app:strokeWidth="1dp">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:background="@drawable/bg_dashboard_card_inner"
+        android:foreground="@drawable/card_light">
 
-        <!-- Icon container — squircle with tinted fill -->
-        <ImageView
-            android:id="@+id/iconDashboard"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/bg_icon_container"
-            android:padding="12dp"
-            app:tint="@color/brand_primary" />
-
-        <!-- Card title -->
-        <TextView
-            android:id="@+id/textTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textColor="@color/brand_text_primary"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:lineSpacingMultiplier="1.2" />
-
-        <!-- Card subtitle -->
-        <TextView
-            android:id="@+id/textSubtitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/brand_text_secondary"
-            android:textSize="13sp"
-            android:lineSpacingMultiplier="1.3" />
-
-        <!-- Tap affordance arrow -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="end"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <View
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+            <!-- Icon container — squircle with tinted fill -->
+            <ImageView
+                android:id="@+id/iconDashboard"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@drawable/bg_icon_container"
-                android:alpha="0.7" />
+                android:padding="12dp"
+                app:tint="@color/brand_primary" />
 
+            <!-- Card title -->
+            <TextView
+                android:id="@+id/textTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:textColor="@color/brand_text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:lineSpacingMultiplier="1.2" />
+
+            <!-- Card subtitle -->
+            <TextView
+                android:id="@+id/textSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/brand_text_secondary"
+                android:textSize="13sp"
+                android:lineSpacingMultiplier="1.3" />
+
+            <!-- Tap affordance arrow -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="@drawable/bg_icon_container"
+                    android:alpha="0.85"
+                    android:padding="3dp"
+                    android:src="@drawable/ic_arrow_up_right_20"
+                    android:tint="@color/brand_text_primary" />
+
+            </LinearLayout>
         </LinearLayout>
-
-    </LinearLayout>
+    </FrameLayout>
 
 </com.google.android.material.card.MaterialCardView>

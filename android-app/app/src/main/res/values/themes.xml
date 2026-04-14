@@ -3,25 +3,37 @@
         <item name="colorPrimary">@color/brand_primary</item>
         <item name="colorOnPrimary">@color/brand_on_primary</item>
         <item name="colorSecondary">@color/brand_secondary</item>
+        <item name="colorTertiary">@color/brand_secondary</item>
         <item name="colorSurface">@color/brand_surface</item>
+        <item name="colorSurfaceVariant">@color/brand_surface_variant</item>
         <item name="colorSurfaceContainerLow">@color/brand_surface</item>
+        <item name="colorOnBackground">@color/brand_text_primary</item>
+        <item name="colorOnSurface">@color/brand_text_primary</item>
+        <item name="colorOnSurfaceVariant">@color/brand_text_secondary</item>
+        <item name="colorOutline">@color/brand_outline</item>
+        <item name="colorPrimaryContainer">@color/accent_soft</item>
+        <item name="colorOnPrimaryContainer">@color/brand_text_primary</item>
+        <item name="colorSecondaryContainer">@color/bg_secondary</item>
+        <item name="colorOnSecondaryContainer">@color/brand_text_primary</item>
         <item name="android:windowBackground">@color/brand_background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@color/brand_card</item>
+        <item name="android:navigationBarColor">@color/brand_background</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
         <item name="materialCardViewStyle">@style/Widget.AIStudyBuddy.CardView</item>
+        <item name="toolbarStyle">@style/Widget.AIStudyBuddy.Toolbar</item>
         <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.AIStudyBuddy.Medium</item>
         <item name="android:fontFamily">sans-serif</item>
     </style>
 
     <style name="Theme.AIStudyBuddy" parent="Base.Theme.AIStudyBuddy" />
 
-    <!-- Elevated card: subtle shadow + hairline border -->
+    <!-- Light card treatment with a soft outline and low elevation. -->
     <style name="Widget.AIStudyBuddy.CardView" parent="Widget.Material3.CardView.Elevated">
         <item name="strokeColor">@color/brand_outline</item>
-        <item name="strokeWidth">0dp</item>
+        <item name="strokeWidth">1dp</item>
         <item name="cardBackgroundColor">@color/brand_card</item>
-        <item name="cardElevation">2dp</item>
+        <item name="cardElevation">3dp</item>
     </style>
 
     <!-- 20dp rounded corners for all medium components -->
@@ -36,12 +48,22 @@
         <item name="cardElevation">3dp</item>
     </style>
 
+    <style name="Widget.AIStudyBuddy.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">@color/brand_background</item>
+        <item name="backgroundTint">@color/brand_background</item>
+        <item name="titleTextColor">@color/text_primary</item>
+        <item name="subtitleTextColor">@color/text_secondary</item>
+        <item name="navigationIconTint">@color/text_primary</item>
+        <item name="android:elevation">0dp</item>
+    </style>
+
     <!-- Section heading text (explicit parent avoids AAPT dot-notation inference) -->
     <style name="TextAppearance.AIStudyBuddy.SectionLabel" parent="TextAppearance.Material3.BodySmall">
         <item name="android:textSize">12sp</item>
         <item name="android:letterSpacing">0.08</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/brand_primary</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontWeight">500</item>
     </style>
 </resources>

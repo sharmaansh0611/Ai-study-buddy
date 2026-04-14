@@ -66,6 +66,19 @@ class UserRepository @Inject constructor(
         }
     }
 
+    suspend fun getResolvedCurrentUserName(): String {
+        val currentUser = firebaseAuth.currentUser ?: return ""
+        val profileName = runCatching {
+            getUserProfile()?.name?.trim().orEmpty()
+        }.getOrDefault("")
+
+        return resolveDisplayName(
+            authDisplayName = currentUser.displayName,
+            email = currentUser.email,
+            nameOverride = profileName
+        )
+    }
+
     private fun resolveDisplayName(
         authDisplayName: String?,
         email: String?,

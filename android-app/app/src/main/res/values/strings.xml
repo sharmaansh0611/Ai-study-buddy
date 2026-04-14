@@ -20,6 +20,10 @@
     <string name="profile">Profile</string>
     <string name="dashboard_heading">Your learning hub</string>
     <string name="dashboard_subheading">Stay on top of notes, collaboration, and revision from one place.</string>
+    <string name="home_greeting">Hello,</string>
+    <string name="home_default_name">Learner</string>
+    <string name="home_header_subtitle">Ready to pick up where you left off? Let’s make today count.</string>
+    <string name="notifications">Notifications</string>
     <string name="study_rooms_heading">Collaborative sessions</string>
     <string name="calendar_heading">Today\'s focus plan</string>
     <string name="profile_heading">Profile</string>

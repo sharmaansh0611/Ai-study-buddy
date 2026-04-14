@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/bg_combined" />
+    <item android:drawable="@drawable/bg_main" />
+    <item android:drawable="@drawable/bg_overlay_glow" />
 </layer-list>

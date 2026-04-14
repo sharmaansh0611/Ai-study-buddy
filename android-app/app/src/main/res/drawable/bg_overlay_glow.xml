@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Top-right soft purple glow -->
+    <item>
+        <shape>
+            <gradient
+                android:type="radial"
+                android:centerX="80%"
+                android:centerY="20%"
+                android:gradientRadius="600"
+                android:startColor="@color/glow_blue"
+                android:endColor="#00FFFFFF"/>
+        </shape>
+    </item>
+
+    <!-- Bottom-left soft pink glow -->
+    <item>
+        <shape>
+            <gradient
+                android:type="radial"
+                android:centerX="20%"
+                android:centerY="80%"
+                android:gradientRadius="600"
+                android:startColor="@color/glow_purple"
+                android:endColor="#00FFFFFF"/>
+        </shape>
+    </item>
+
+</layer-list>

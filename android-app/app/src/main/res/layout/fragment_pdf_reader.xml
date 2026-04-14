@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:background="@color/brand_background">
+    android:background="@drawable/bg_combined">
 
     <!-- Toolbar: shows document title and back navigation -->
     <com.google.android.material.appbar.MaterialToolbar
