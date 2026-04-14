@@ -45,7 +45,15 @@ class StudyToolsActivity : AppCompatActivity() {
             viewModel.generateFlashcards(binding.editStudyText.text?.toString().orEmpty())
         }
 
+        intent.getStringExtra(EXTRA_INITIAL_TEXT)?.let {
+            binding.editStudyText.setText(it)
+        }
+
         observeState()
+    }
+
+    companion object {
+        const val EXTRA_INITIAL_TEXT = "extra_initial_text"
     }
 
     private fun observeState() {

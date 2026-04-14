@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.sharmadipanshu.aistudybuddy.models.AIChatRequest
 import com.sharmadipanshu.aistudybuddy.models.AIChatResponse
 import com.sharmadipanshu.aistudybuddy.models.ApiResult
+import com.sharmadipanshu.aistudybuddy.models.Flashcard
 import com.sharmadipanshu.aistudybuddy.models.PDFDocument
+import com.sharmadipanshu.aistudybuddy.models.QuizQuestion
 import com.sharmadipanshu.aistudybuddy.repository.PDFRepository
 import com.sharmadipanshu.aistudybuddy.repository.StudyRepository
 import com.sharmadipanshu.aistudybuddy.utils.UiState
@@ -22,29 +24,32 @@ class PDFReaderViewModel @Inject constructor(
     private val studyRepository: StudyRepository
 ) : ViewModel() {
 
+    // -- PDF file resolution state --
     private val _pdfFileState = MutableLiveData<UiState<File>>(UiState.Idle)
     val pdfFileState: LiveData<UiState<File>> = _pdfFileState
 
     private val _documentTitle = MutableLiveData<String>()
     val documentTitle: LiveData<String> = _documentTitle
 
-    private val _currentPageLabel = MutableLiveData("Page 1")
-    val currentPageLabel: LiveData<String> = _currentPageLabel
-
-    private val _currentPageText = MutableLiveData("")
-    val currentPageText: LiveData<String> = _currentPageText
-
+    // -- AI response state --
     private val _aiResponseState = MutableLiveData<UiState<AIChatResponse>>(UiState.Idle)
     val aiResponseState: LiveData<UiState<AIChatResponse>> = _aiResponseState
 
+    private val _quizState = MutableLiveData<UiState<List<QuizQuestion>>>(UiState.Idle)
+    val quizState: LiveData<UiState<List<QuizQuestion>>> = _quizState
+
+    private val _flashcardsState = MutableLiveData<UiState<List<Flashcard>>>(UiState.Idle)
+    val flashcardsState: LiveData<UiState<List<Flashcard>>> = _flashcardsState
+
+    // -- Current note ID, needed for the /ask API --
+    private var currentNoteId: String = ""
+
     private var isLoaded = false
-    private var currentFile: File? = null
-    private var currentDocument: PDFDocument? = null
 
     fun loadDocument(document: PDFDocument) {
         if (isLoaded) return
 
-        currentDocument = document
+        currentNoteId = document.noteId
         _documentTitle.value = document.title
         _pdfFileState.value = UiState.Loading
 
@@ -53,9 +58,7 @@ class PDFReaderViewModel @Inject constructor(
                 pdfRepository.resolvePdfFile(document)
             }.onSuccess { file ->
                 isLoaded = true
-                currentFile = file
                 _pdfFileState.value = UiState.Success(file)
-                extractPageText(0)
             }.onFailure { throwable ->
                 _pdfFileState.value = UiState.Error(
                     throwable.localizedMessage ?: "Unable to open the PDF."
@@ -64,29 +67,15 @@ class PDFReaderViewModel @Inject constructor(
         }
     }
 
-    fun onPageChanged(page: Int, pageCount: Int) {
-        val currentPage = page + 1
-        _currentPageLabel.value = "Page $currentPage of $pageCount"
-        extractPageText(page)
-    }
-
-    fun extractPageText(page: Int) {
-        val file = currentFile ?: return
-
-        viewModelScope.launch {
-            runCatching {
-                pdfRepository.extractPageText(file, page)
-            }.onSuccess { text ->
-                _currentPageText.value = text
-            }.onFailure {
-                _currentPageText.value = ""
-            }
-        }
-    }
-
-    fun runAiAction(selectedText: String, prompt: String) {
-        val normalizedText = selectedText.trim()
-        if (normalizedText.isBlank()) {
+    /**
+     * Sends the selected text with an action prefix (Explain / Summarize / Ask AI question)
+     * to the backend using the existing /ai/ask endpoint.
+     *
+     * The request body mirrors: POST /ask { "query": "<action>: <text>", "docId": "<noteId>" }
+     */
+    fun runAiAction(selectedText: String, action: String) {
+        val normalized = selectedText.trim()
+        if (normalized.isBlank()) {
             _aiResponseState.value = UiState.Error("Select readable text first.")
             return
         }
@@ -96,8 +85,8 @@ class PDFReaderViewModel @Inject constructor(
             when (
                 val result = studyRepository.askAi(
                     AIChatRequest(
-                        text = normalizedText,
-                        prompt = prompt
+                        text = normalized,
+                        prompt = action
                     )
                 )
             ) {
@@ -108,13 +97,44 @@ class PDFReaderViewModel @Inject constructor(
     }
 
     fun askFollowUpQuestion(selectedText: String, question: String) {
-        runAiAction(
-            selectedText = selectedText,
-            prompt = question
-        )
+        runAiAction(selectedText = selectedText, action = question)
     }
 
     fun clearAiResponseState() {
         _aiResponseState.value = UiState.Idle
+        _quizState.value = UiState.Idle
+        _flashcardsState.value = UiState.Idle
+    }
+
+    fun generateQuizFromText(text: String) {
+        val normalized = text.trim()
+        if (normalized.isBlank()) {
+            _quizState.value = UiState.Error("Select text to generate a quiz.")
+            return
+        }
+
+        _quizState.value = UiState.Loading
+        viewModelScope.launch {
+            when (val result = studyRepository.generateQuiz(normalized)) {
+                is ApiResult.Success -> _quizState.value = UiState.Success(result.data)
+                is ApiResult.Error -> _quizState.value = UiState.Error(result.message)
+            }
+        }
+    }
+
+    fun generateFlashcardsFromText(text: String) {
+        val normalized = text.trim()
+        if (normalized.isBlank()) {
+            _flashcardsState.value = UiState.Error("Select text to generate flashcards.")
+            return
+        }
+
+        _flashcardsState.value = UiState.Loading
+        viewModelScope.launch {
+            when (val result = studyRepository.generateFlashcards(normalized)) {
+                is ApiResult.Success -> _flashcardsState.value = UiState.Success(result.data)
+                is ApiResult.Error -> _flashcardsState.value = UiState.Error(result.message)
+            }
+        }
     }
 }

@@ -2,10 +2,6 @@ package com.sharmadipanshu.aistudybuddy.repository
 
 import android.content.Context
 import com.sharmadipanshu.aistudybuddy.models.PDFDocument
-import com.sharmadipanshu.aistudybuddy.models.HighlightArea
-import com.sharmadipanshu.aistudybuddy.models.SelectedSection
-import com.sharmadipanshu.aistudybuddy.utils.NoteSectionExtractor
-import com.sharmadipanshu.aistudybuddy.utils.PdfTextExtractor
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,11 +14,14 @@ import javax.inject.Singleton
 @Singleton
 class PDFRepository @Inject constructor(
     @param:ApplicationContext private val context: Context,
-    private val noteSectionExtractor: NoteSectionExtractor,
-    private val pdfTextExtractor: PdfTextExtractor,
     private val okHttpClient: OkHttpClient
 ) {
 
+    /**
+     * Resolves the PDF to a local [File]:
+     *  1. Uses the local path if it already exists on disk.
+     *  2. Otherwise downloads the remote URL and caches it in [Context.getCacheDir].
+     */
     suspend fun resolvePdfFile(document: PDFDocument): File = withContext(Dispatchers.IO) {
         document.localPath?.let { localPath ->
             val localFile = File(localPath)
@@ -47,16 +46,12 @@ class PDFRepository @Inject constructor(
             cachedFile.delete()
         }
 
-        val requestBuilder = Request.Builder()
-            .url(remoteUrl)
-
+        val requestBuilder = Request.Builder().url(remoteUrl)
         if (remoteUrl.contains("/uploads/")) {
             requestBuilder.header("Accept", "application/pdf")
         }
 
-        val request = requestBuilder.build()
-
-        okHttpClient.newCall(request).execute().use { response ->
+        okHttpClient.newCall(requestBuilder.build()).execute().use { response ->
             val contentType = response.body?.contentType()?.toString().orEmpty()
 
             if (!response.isSuccessful || response.body == null) {
@@ -67,8 +62,8 @@ class PDFRepository @Inject constructor(
                 throw IllegalStateException("The downloaded file is not a valid PDF.")
             }
 
-            cachedFile.outputStream().use { outputStream ->
-                response.body!!.byteStream().copyTo(outputStream)
+            cachedFile.outputStream().use { out ->
+                response.body!!.byteStream().copyTo(out)
             }
 
             cachedFile.inputStream().use { input ->
@@ -81,29 +76,5 @@ class PDFRepository @Inject constructor(
 
             return@withContext cachedFile
         }
-    }
-
-    suspend fun extractPageText(pdfFile: File, page: Int): String = withContext(Dispatchers.IO) {
-        pdfTextExtractor.extractPageText(pdfFile, page)
-    }
-
-    suspend fun extractSection(
-        noteId: String,
-        pageNumber: Int,
-        xCoordinate: Float,
-        yCoordinate: Float,
-        viewWidth: Float,
-        viewHeight: Float,
-        pageText: String
-    ): Pair<SelectedSection, HighlightArea> = withContext(Dispatchers.Default) {
-        noteSectionExtractor.extractSection(
-            noteId = noteId,
-            pageNumber = pageNumber,
-            xCoordinate = xCoordinate,
-            yCoordinate = yCoordinate,
-            viewWidth = viewWidth,
-            viewHeight = viewHeight,
-            pageText = pageText
-        )
     }
 }

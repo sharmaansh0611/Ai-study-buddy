@@ -61,18 +61,3 @@ data class ChatMessage(
     val text: String,
     val isUser: Boolean
 )
-
-data class HighlightArea(
-    val x: Float,
-    val y: Float,
-    val width: Float,
-    val height: Float
-)
-
-data class SelectedSection(
-    val noteId: String,
-    val pageNumber: Int,
-    val xCoordinate: Float,
-    val yCoordinate: Float,
-    val selectedText: String
-)

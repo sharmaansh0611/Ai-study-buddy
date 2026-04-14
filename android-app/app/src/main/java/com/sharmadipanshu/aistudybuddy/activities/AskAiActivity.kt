@@ -32,6 +32,10 @@ class AskAiActivity : AppCompatActivity() {
         }
         binding.toolbar.setNavigationOnClickListener { finish() }
 
+        intent.getStringExtra(EXTRA_INITIAL_TEXT)?.let {
+            binding.editQuestion.setText(it)
+        }
+
         if (noteId.isNullOrBlank()) {
             binding.editQuestion.isEnabled = false
             binding.buttonAskAi.isEnabled = false
@@ -77,14 +81,17 @@ class AskAiActivity : AppCompatActivity() {
     companion object {
         private const val EXTRA_NOTE_ID = "extra_note_id"
         private const val EXTRA_TITLE = "extra_title"
+        private const val EXTRA_INITIAL_TEXT = "extra_initial_text"
 
         fun createIntent(
             context: Context,
             noteId: String? = null,
-            title: String? = null
+            title: String? = null,
+            initialText: String? = null
         ): Intent = Intent(context, AskAiActivity::class.java).apply {
             putExtra(EXTRA_NOTE_ID, noteId)
             putExtra(EXTRA_TITLE, title)
+            putExtra(EXTRA_INITIAL_TEXT, initialText)
         }
     }
 }

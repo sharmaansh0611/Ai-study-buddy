@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/brand_background">
 
+    <!-- Toolbar: shows document title and back navigation -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
@@ -22,61 +23,60 @@
             android:textColor="@color/brand_text_primary"
             android:textSize="18sp"
             android:textStyle="bold" />
+
     </com.google.android.material.appbar.MaterialToolbar>
 
-    <TextView
-        android:id="@+id/textPageIndicator"
+    <!--
+        Fullscreen WebView — PDF.js renders inside here via WebViewAssetLoader.
+        Hardware acceleration is inherited from the Application but also
+        explicitly set via setLayerType in Fragment code.
+    -->
+    <WebView
+        android:id="@+id/pdfWebView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:textColor="@color/brand_text_secondary"
-        android:textStyle="bold"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-    <FrameLayout
-        android:id="@+id/pdfContainer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textPageIndicator">
-
-        <com.github.barteksc.pdfviewer.PDFView
-            android:id="@+id/pdfView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/brand_card" />
-    </FrameLayout>
-
-    <TextView
-        android:id="@+id/textError"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="@color/brand_text_secondary"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/pdfContainer"
-        app:layout_constraintEnd_toEndOf="@id/pdfContainer"
-        app:layout_constraintStart_toStartOf="@id/pdfContainer"
-        app:layout_constraintTop_toTopOf="@id/pdfContainer" />
-
+    <!-- Loading indicator shown while the PDF file is being downloaded/resolved -->
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/pdfContainer"
-        app:layout_constraintEnd_toEndOf="@id/pdfContainer"
-        app:layout_constraintStart_toStartOf="@id/pdfContainer"
-        app:layout_constraintTop_toTopOf="@id/pdfContainer" />
+        app:layout_constraintBottom_toBottomOf="@id/pdfWebView"
+        app:layout_constraintEnd_toEndOf="@id/pdfWebView"
+        app:layout_constraintStart_toStartOf="@id/pdfWebView"
+        app:layout_constraintTop_toTopOf="@id/pdfWebView" />
+
+    <!-- Error state: shown when PDF cannot be resolved/downloaded -->
+    <TextView
+        android:id="@+id/textError"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="24dp"
+        android:textColor="@color/brand_text_secondary"
+        android:textSize="15sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/pdfWebView"
+        app:layout_constraintEnd_toEndOf="@id/pdfWebView"
+        app:layout_constraintStart_toStartOf="@id/pdfWebView"
+        app:layout_constraintTop_toTopOf="@id/pdfWebView" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabAskAi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Ask AI"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/brand_primary"
+        app:icon="@drawable/ic_spark_24"
+        app:iconTint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
