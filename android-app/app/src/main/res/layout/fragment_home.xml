@@ -10,58 +10,118 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:paddingStart="20dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="28dp">
 
+        <!-- ━━━━━━━━━━━━━━ HERO HEADER CARD ━━━━━━━━━━━━━━ -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/headerCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/brand_primary"
-            app:cardCornerRadius="32dp">
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_header_gradient"
                 android:orientation="vertical"
-                android:padding="24dp">
+                android:paddingStart="24dp"
+                android:paddingTop="28dp"
+                android:paddingEnd="24dp"
+                android:paddingBottom="24dp">
 
+                <!-- Greeting label -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="Good day 👋"
+                    android:textColor="#CCDAFF"
+                    android:textSize="14sp"
+                    android:letterSpacing="0.02" />
+
+                <!-- Main title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
                     android:text="@string/dashboard_heading"
                     android:textColor="@color/white"
-                    android:textSize="28sp"
-                    android:textStyle="bold" />
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:lineSpacingMultiplier="1.1" />
 
+                <!-- Subtitle -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="@string/dashboard_subheading"
-                    android:textColor="#DCE5FF"
-                    android:textSize="15sp" />
+                    android:textColor="#B8C8FF"
+                    android:textSize="14sp"
+                    android:lineSpacingMultiplier="1.4" />
 
-                <TextView
-                    android:id="@+id/textApiStatus"
-                    android:layout_width="wrap_content"
+                <!-- Divider line -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="20dp"
+                    android:background="#25FFFFFF" />
+
+                <!-- Status chip row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/bg_status_chip"
-                    android:paddingStart="12dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="12dp"
-                    android:paddingBottom="8dp"
-                    android:textColor="@color/white"
-                    android:textSize="13sp" />
+                    android:layout_marginTop="14dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:background="@drawable/bg_status_dot" />
+
+                    <TextView
+                        android:id="@+id/textApiStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textColor="#CCDAFF"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- ━━━━━━━━━━━━━━ SECTION LABEL ━━━━━━━━━━━━━━ -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/bg_section_chip"
+            android:paddingStart="12dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="4dp"
+            android:text="QUICK ACTIONS"
+            android:textColor="@color/brand_primary"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.10" />
+
+        <!-- ━━━━━━━━━━━━━━ DASHBOARD GRID ━━━━━━━━━━━━━━ -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerDashboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:nestedScrollingEnabled="false" />
+            android:layout_marginTop="12dp"
+            android:nestedScrollingEnabled="false"
+            android:clipToPadding="false" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
