@@ -2,8 +2,18 @@ import { answerGlobalQuestion } from "../services/ragService.js";
 import { routeAI } from "../services/aiRouter.js";
 import { generateStudyMaterial } from "../services/backgroundWorker.js";
 
+const getRootErrorMessage = (error) => {
+  let currentError = error;
+
+  while (currentError?.cause) {
+    currentError = currentError.cause;
+  }
+
+  return currentError?.message || error?.message || "";
+};
+
 const getStatusCode = (error) =>
-  error?.message === "GEMINI_API_KEY is required to use Gemini." ? 500 : 502;
+  getRootErrorMessage(error).includes("GEMINI_API_KEY is required to use Gemini.") ? 500 : 502;
 
 export const askAiChat = async (req, res) => {
   try {
