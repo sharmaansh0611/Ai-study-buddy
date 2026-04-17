@@ -128,10 +128,11 @@ class PDFReaderFragment : Fragment() {
                 // Mixed content: all URLs come from our same appassets domain
                 mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
 
-                // Disable WebView's built-in zoom — PDF.js controls zoom internally.
-                // Enabling both would cause double-scaling and text-layer misalignment.
-                setSupportZoom(false)
-                builtInZoomControls = false
+                // Let Android WebView handle pinch zoom for the full PDF viewer.
+                // This scales canvas + text layer together, which keeps them aligned
+                // while enabling physical-device pinch gestures.
+                setSupportZoom(true)
+                builtInZoomControls = true
                 displayZoomControls = false
 
                 // Do NOT set useWideViewPort=true — that activates a ~980px desktop
