@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">AI Study Buddy</string>
+    <string name="splash_title">Study Smarter</string>
+    <string name="splash_subtitle">Enhance your learning and productivity</string>
+    <string name="splash_loading">Preparing your workspace</string>
     <string name="default_web_client_id">REPLACE_WITH_FIREBASE_WEB_CLIENT_ID</string>
     <string name="firebase_application_id">REPLACE_WITH_FIREBASE_APP_ID</string>
     <string name="firebase_api_key">REPLACE_WITH_FIREBASE_API_KEY</string>
@@ -9,21 +12,16 @@
     <string name="welcome_title">Learn faster with your AI study co-pilot</string>
     <string name="welcome_subtitle">Organize notes, collaborate in study rooms, and ask AI for instant help.</string>
     <string name="login">Log In</string>
-    <string name="signup">Create Account</string>
     <string name="email_hint">Academic email</string>
     <string name="password_hint">Password</string>
-    <string name="confirm_password_hint">Confirm password</string>
     <string name="google_sign_in">Continue with Google</string>
     <string name="home">Home</string>
     <string name="study_rooms">Study Rooms</string>
     <string name="calendar">Calendar</string>
     <string name="profile">Profile</string>
-    <string name="dashboard_heading">Your learning hub</string>
-    <string name="dashboard_subheading">Stay on top of notes, collaboration, and revision from one place.</string>
     <string name="home_greeting">Hello,</string>
     <string name="home_default_name">Learner</string>
     <string name="home_header_subtitle">Ready to pick up where you left off? Let’s make today count.</string>
-    <string name="notifications">Notifications</string>
     <string name="study_rooms_heading">Collaborative sessions</string>
     <string name="calendar_heading">Today\'s focus plan</string>
     <string name="profile_heading">Profile</string>
@@ -33,20 +31,10 @@
     <string name="choose_pdf">Choose PDF</string>
     <string name="upload_note">Upload Note</string>
     <string name="note_title">Note title</string>
-    <string name="select_page">Select Page</string>
     <string name="generate_notes">Generate Notes</string>
     <string name="ask_ai">Ask AI</string>
-    <string name="ask_question_hint">Ask about this page</string>
-    <string name="send_question">Send</string>
     <string name="summary_label">Summary</string>
     <string name="key_points_label">Key points</string>
-    <string name="explain">Explain</string>
-    <string name="simplify">Simplify</string>
-    <string name="clear_selection">Clear selection</string>
-    <string name="select_text_manually">Select text manually</string>
-    <string name="manual_selection_title">Select any text</string>
-    <string name="use_selected_text">Use selected text</string>
-    <string name="use_full_page_text">Use full page text</string>
     <string name="view">View</string>
     <string name="delete">Delete</string>
     <string name="delete_note_title">Delete note</string>
@@ -54,10 +42,6 @@
     <string name="ask_anything_about_notes">Ask anything about your uploaded notes</string>
     <string name="ask_ai_about_note">Ask AI about %1$s</string>
     <string name="retrieved_chunks_count">%1$d note chunks retrieved</string>
-    <string name="summarize">Summarize</string>
-    <string name="generate_key_points">Key Points</string>
-    <string name="generate_flashcards">Flashcards</string>
-    <string name="no_readable_text_on_page">No readable text was found on this page. Scanned PDFs may require OCR.</string>
     <string name="study_tools">Study Tools</string>
     <string name="general_ai_coming_soon">General AI assistant is coming soon. Offline note-based AI is available from My Notes and Study Tools.</string>
 </resources>

@@ -1,64 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_auth_screen">
+    android:layout_height="match_parent">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/logoCard"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_marginTop="72dp"
-        app:cardBackgroundColor="@color/brand_card"
-        app:cardCornerRadius="32dp"
-        app:cardElevation="3dp"
+
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/wave"
+        app:layout_constraintBottom_toTopOf="@+id/textAppTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_spark_24"
-            app:tint="@color/brand_primary" />
-    </com.google.android.material.card.MaterialCardView>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textAppTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/app_name"
-        android:textColor="@color/brand_text_primary"
-        android:textSize="30sp"
+        android:fontFamily="@font/rubikvariablefontwght"
+        android:text="@string/splash_title"
+        android:textColor="@color/splash_text_primary"
+        android:textSize="36sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/textSubtitle"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/logoCard" />
+        app:layout_constraintTop_toTopOf="@id/contentGuide"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="32dp"
-        android:gravity="center"
-        android:text="@string/welcome_subtitle"
-        android:textColor="@color/brand_text_secondary"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textAppTitle" />
-
-    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/textSubtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="88dp"
-        app:indicatorColor="@color/brand_primary"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/splash_subtitle"
+        android:textColor="@color/splash_text_secondary"
+        android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textAppTitle"
+        app:layout_constraintTop_toBottomOf="@id/textAppTitle" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/contentGuide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.61" />
+
+    <LinearLayout
+        android:id="@+id/loadingGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="38dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline2">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:indeterminate="true"
+            app:indicatorColor="@color/splash_royal_blue"
+            app:indicatorInset="0dp"
+            app:indicatorSize="24dp"
+            app:trackColor="@color/accent_soft" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="@string/splash_loading"
+            android:textColor="@color/splash_text_secondary"
+            android:textSize="14sp" />
+    </LinearLayout>
+    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/guideline2"
+        app:layout_constraintGuide_percent=".9"
+        android:orientation="horizontal"/>
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

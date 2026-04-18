@@ -8,7 +8,6 @@
 
     <color name="text_primary">#1E1B4B</color>
     <color name="text_secondary">#6B7280</color>
-    <color name="text_muted">#9CA3AF</color>
 
     <color name="accent_blue">#6366F1</color>
     <color name="accent_purple">#7C3AED</color>
@@ -20,11 +19,9 @@
     <color name="header_overlay_dark">#14FFFFFF</color>
     <color name="glow_blue">#40C4B5FD</color>
     <color name="glow_purple">#26FBCFE8</color>
-    <color name="shadow_soft">#120F172A</color>
 
     <color name="card_bg">@color/surface</color>
     <color name="card_tint">@color/surface_variant</color>
-    <color name="card_border">@color/border</color>
 
     <color name="brand_primary">@color/accent_purple</color>
     <color name="brand_on_primary">@color/white</color>
@@ -34,13 +31,19 @@
     <color name="brand_background">@color/bg_primary</color>
     <color name="brand_text_primary">@color/text_primary</color>
     <color name="brand_text_secondary">@color/text_secondary</color>
-    <color name="brand_success">@color/accent_blue</color>
     <color name="brand_card">@color/card_bg</color>
     <color name="brand_outline">@color/border</color>
 
-    <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
     <color name="navigation_item_active">@color/brand_primary</color>
     <color name="navigation_item_inactive">@color/text_secondary</color>
+
+    <color name="splash_royal_blue">#304FFE</color>
+    <color name="splash_text_primary">#243055</color>
+    <color name="splash_text_secondary">#6F7895</color>
+    <color name="blue_signup">#8387FF</color>
+    <color name="grey_300_signup">#9CA3AF</color>
+
+
 </resources>

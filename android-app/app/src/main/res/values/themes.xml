@@ -43,10 +43,6 @@
     </style>
 
     <!-- Dashboard card item -->
-    <style name="Widget.AIStudyBuddy.DashboardCard" parent="Widget.AIStudyBuddy.CardView">
-        <item name="cardCornerRadius">20dp</item>
-        <item name="cardElevation">3dp</item>
-    </style>
 
     <style name="Widget.AIStudyBuddy.Toolbar" parent="Widget.Material3.Toolbar">
         <item name="android:background">@color/brand_background</item>
@@ -58,12 +54,4 @@
     </style>
 
     <!-- Section heading text (explicit parent avoids AAPT dot-notation inference) -->
-    <style name="TextAppearance.AIStudyBuddy.SectionLabel" parent="TextAppearance.Material3.BodySmall">
-        <item name="android:textSize">12sp</item>
-        <item name="android:letterSpacing">0.08</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/brand_primary</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:fontWeight">500</item>
-    </style>
 </resources>
