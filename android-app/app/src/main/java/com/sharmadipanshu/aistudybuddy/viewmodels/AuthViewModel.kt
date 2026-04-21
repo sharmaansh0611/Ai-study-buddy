@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sharmadipanshu.aistudybuddy.models.AuthState
 import com.sharmadipanshu.aistudybuddy.repository.AuthRepository
+import com.sharmadipanshu.aistudybuddy.utils.PhoneNumberUtils
 import com.sharmadipanshu.aistudybuddy.utils.ValidationUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -40,7 +41,17 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun signup(email: String, password: String, confirmPassword: String) {
+    fun signup(name: String, phoneNumber: String, email: String, password: String, confirmPassword: String) {
+        if (name.isBlank()) {
+            _authState.value = AuthState(errorMessage = "Please enter your name")
+            return
+        }
+
+        val normalizedPhone = PhoneNumberUtils.normalizeIndianMobile10(phoneNumber)
+        if (normalizedPhone == null) {
+            _authState.value = AuthState(errorMessage = "Please enter a valid 10-digit Indian mobile number")
+            return
+        }
         if (!validate(email, password)) return
         if (password != confirmPassword) {
             _authState.value = AuthState(errorMessage = "Passwords do not match")
@@ -50,7 +61,7 @@ class AuthViewModel @Inject constructor(
         _authState.value = AuthState(isLoading = true)
         viewModelScope.launch {
             runCatching {
-                authRepository.signup(email.trim(), password)
+                authRepository.signup(email.trim(), password, name.trim(), normalizedPhone)
             }.onSuccess {
                 _authState.value = AuthState(
                     successMessage = "Account created. Please verify your email before logging in.",
@@ -67,9 +78,13 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 authRepository.signInWithGoogle(idToken)
-            }.onSuccess { isVerified ->
-                _authState.value = if (isVerified) {
-                    AuthState(isAuthenticated = true)
+            }.onSuccess { outcome ->
+                _authState.value = if (outcome.isAuthenticated) {
+                    if (outcome.requiresPhoneNumber) {
+                        AuthState(shouldNavigateToPhoneNumber = true)
+                    } else {
+                        AuthState(isAuthenticated = true)
+                    }
                 } else {
                     AuthState(errorMessage = "Your Google account is not verified yet.")
                 }
@@ -79,10 +94,33 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun sendPasswordReset(email: String) {
+        if (email.isBlank()) {
+            _authState.value = AuthState(errorMessage = "Please enter your email to reset your password")
+            return
+        }
+        if (!ValidationUtils.isValidEmail(email.trim())) {
+            _authState.value = AuthState(errorMessage = "Please enter a valid email address")
+            return
+        }
+
+        _authState.value = AuthState(isLoading = true)
+        viewModelScope.launch {
+            runCatching {
+                authRepository.sendPasswordResetEmail(email.trim())
+            }.onSuccess {
+                _authState.value = AuthState(successMessage = "Password reset email sent")
+            }.onFailure { throwable ->
+                _authState.value = AuthState(errorMessage = throwable.localizedMessage ?: "Failed to send reset email")
+            }
+        }
+    }
+
     fun clearFeedback() {
         _authState.value = _authState.value?.copy(
             errorMessage = null,
             successMessage = null,
+            shouldNavigateToPhoneNumber = false,
             shouldNavigateToLogin = false
         )
     }

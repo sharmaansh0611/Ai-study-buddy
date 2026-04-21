@@ -150,6 +150,20 @@ class PDFReaderFragment : Fragment() {
                     view: WebView,
                     request: WebResourceRequest
                 ): WebResourceResponse? = assetLoader.shouldInterceptRequest(request.url)
+
+                override fun onReceivedError(
+                    view: WebView,
+                    request: WebResourceRequest,
+                    error: android.webkit.WebResourceError
+                ) {
+                    super.onReceivedError(view, request, error)
+                    // If PDF.js assets fail to load, WebView can stay on the viewer's loading state.
+                    // Surface a simple error to avoid a "stuck loading" experience.
+                    if (request.isForMainFrame) {
+                        binding.textError.isVisible = true
+                        binding.textError.text = "Failed to load PDF viewer."
+                    }
+                }
             }
         }
     }

@@ -193,6 +193,51 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="4dp"/>
 
+        <!-- NAME -->
+        <TextView
+            android:id="@+id/nameLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textSize="14sp"
+            android:textColor="#6B7280"
+            app:layout_constraintTop_toBottomOf="@id/textTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="32dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/nameLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:boxBackgroundMode="none"
+            app:hintEnabled="false"
+            app:startIconDrawable="@drawable/ic_profile_24"
+            app:startIconTint="@color/input_icon_color"
+            app:layout_constraintTop_toBottomOf="@id/nameLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Your name"
+                android:textSize="16sp"
+                android:textColor="#111827"
+                android:background="@null"
+                android:paddingVertical="5dp"
+                android:inputType="textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <View
+            android:id="@+id/nameLine"
+            android:layout_width="0dp"
+            android:layout_height="1.5dp"
+            android:background="@color/input_line_color"
+            app:layout_constraintTop_toBottomOf="@id/nameLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <!-- EMAIL -->
             <TextView
                 android:id="@+id/emailLabel"
@@ -201,9 +246,9 @@
                 android:text="Email"
                 android:textSize="14sp"
                 android:textColor="#6B7280"
-                app:layout_constraintTop_toBottomOf="@id/textTitle"
+                app:layout_constraintTop_toBottomOf="@id/nameLine"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="32dp"/>
+                android:layout_marginTop="6dp"/>
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/emailLayout"
             android:layout_width="0dp"
@@ -264,12 +309,14 @@
                 android:id="@+id/editNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="+00 000-0000-000"
+                android:digits="0123456789"
+                android:hint="10-digit mobile number"
                 android:textSize="16sp"
                 android:textColor="#111827"
                 android:background="@null"
                 android:paddingVertical="5dp"
-                android:inputType="phone"/>
+                android:inputType="number"
+                android:maxLength="10"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <View
@@ -432,4 +479,3 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.core.widget.NestedScrollView>
-

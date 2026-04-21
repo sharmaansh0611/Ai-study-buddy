@@ -2,6 +2,15 @@ const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434";
 const OLLAMA_CHAT_MODEL = process.env.OLLAMA_CHAT_MODEL || "qwen2.5:7b";
 const OLLAMA_FAST_MODEL = process.env.OLLAMA_FAST_MODEL || OLLAMA_CHAT_MODEL;
 const OLLAMA_REQUEST_TIMEOUT_MS = Number(process.env.OLLAMA_REQUEST_TIMEOUT_MS || 120000);
+const OLLAMA_TEMPERATURE = Number(process.env.OLLAMA_TEMPERATURE ?? process.env.AI_TEMPERATURE);
+
+const buildOllamaOptions = () => {
+  const temperature = OLLAMA_TEMPERATURE;
+  if (!Number.isFinite(temperature)) {
+    return undefined;
+  }
+  return { temperature };
+};
 
 const buildAbortSignal = () => {
   const controller = new AbortController();
@@ -54,6 +63,7 @@ export const generateOllamaResponse = async (prompt, { fast = false } = {}) => {
       model: fast ? OLLAMA_FAST_MODEL : OLLAMA_CHAT_MODEL,
       prompt,
       stream: false,
+      options: buildOllamaOptions(),
     },
   });
 

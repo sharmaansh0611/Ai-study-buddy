@@ -30,9 +30,9 @@
   </div>
 
   <script type="module">
-    import * as pdfjsLib from '../build/pdf.mjs';
+    import * as pdfjsLib from '../lib/pdf.mjs';
 
-    pdfjsLib.GlobalWorkerOptions.workerSrc = '../build/pdf.worker.mjs';
+    pdfjsLib.GlobalWorkerOptions.workerSrc = '../lib/pdf.worker.mjs';
 
     const params = new URLSearchParams(window.location.search);
     const pdfUrl = params.get('file');

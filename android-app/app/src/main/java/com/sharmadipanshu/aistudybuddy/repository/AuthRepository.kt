@@ -3,6 +3,7 @@ package com.sharmadipanshu.aistudybuddy.repository
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.sharmadipanshu.aistudybuddy.models.GoogleSignInOutcome
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -47,15 +48,29 @@ class AuthRepository @Inject constructor(
         firebaseAuth.signOut()
     }
 
-    suspend fun signInWithGoogle(idToken: String): Boolean {
+    suspend fun signup(email: String, password: String, name: String, phoneNumber: String) {
+        val authResult = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+        userRepository.createUserProfile(nameOverride = name, phoneNumber = phoneNumber)
+        authResult.user?.sendEmailVerification()?.await()
+        firebaseAuth.signOut()
+    }
+
+    suspend fun signInWithGoogle(idToken: String): GoogleSignInOutcome {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         val authResult = firebaseAuth.signInWithCredential(credential).await()
         return if (authResult.user?.isEmailVerified != false) {
-            userRepository.ensureUserProfile(authResult.user?.displayName)
-            true
+            val profile = userRepository.ensureUserProfile(nameOverride = authResult.user?.displayName)
+            GoogleSignInOutcome(
+                isAuthenticated = true,
+                requiresPhoneNumber = profile.phone.isBlank()
+            )
         } else {
-            false
+            GoogleSignInOutcome(isAuthenticated = false, requiresPhoneNumber = false)
         }
+    }
+
+    suspend fun sendPasswordResetEmail(email: String) {
+        firebaseAuth.sendPasswordResetEmail(email).await()
     }
 
     fun signOut() {

@@ -33,10 +33,12 @@ class SignupActivity : AppCompatActivity() {
 
         observeViewModel()
         setupListeners()
+        setupFocus(binding.editName, binding.nameLine)
         setupFocus(binding.editEmail, binding.emailLine)
         setupFocus(binding.editNumber, binding.phoneLine)
         setupFocus(binding.editPassword, binding.passwordLine)
         setupFocus(binding.editConfirmPassword, binding.confirmLine)
+        setupFocusWithIcon(binding.editName, binding.nameLine, binding.nameLayout)
         setupFocusWithIcon(binding.editEmail, binding.emailLine, binding.emailLayout)
         setupFocusWithIcon(binding.editNumber, binding.phoneLine, binding.phoneLayout)
         setupFocusWithIcon(binding.editPassword, binding.passwordLine, binding.passwordLayout)
@@ -61,6 +63,8 @@ class SignupActivity : AppCompatActivity() {
     private fun setupListeners() = with(binding) {
         buttonSignup.setOnClickListener {
             viewModel.signup(
+                editName.text?.toString().orEmpty(),
+                editNumber.text?.toString().orEmpty(),
                 editEmail.text?.toString().orEmpty(),
                 editPassword.text?.toString().orEmpty(),
                 editConfirmPassword.text?.toString().orEmpty()

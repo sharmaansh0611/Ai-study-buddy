@@ -1,6 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const GEMINI_MODEL = "gemini-3.1-pro-preview";
+const DEFAULT_GEMINI_MODEL = "gemini-3.1-pro-preview";
+const GEMINI_MODEL = process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL;
+const GEMINI_TEMPERATURE = Number(process.env.GEMINI_TEMPERATURE ?? process.env.AI_TEMPERATURE);
 
 let cachedModel;
 
@@ -16,7 +18,12 @@ const getGeminiModel = () => {
   }
 
   const client = new GoogleGenerativeAI(apiKey);
-  cachedModel = client.getGenerativeModel({ model: GEMINI_MODEL });
+  cachedModel = client.getGenerativeModel({
+    model: GEMINI_MODEL,
+    generationConfig: Number.isFinite(GEMINI_TEMPERATURE)
+      ? { temperature: GEMINI_TEMPERATURE }
+      : undefined,
+  });
 
   return cachedModel;
 };

@@ -19,7 +19,8 @@ data class QuizResponse(
 
 data class Flashcard(
     val question: String,
-    val answer: String
+    val answer: String,
+    var isFlipped: Boolean = false
 )
 
 data class FlashcardsResponse(

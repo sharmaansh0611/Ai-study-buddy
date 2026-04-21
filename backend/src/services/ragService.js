@@ -90,7 +90,6 @@ export const answerGlobalQuestion = async ({ userId, question }) => {
     const chunks = await retrieveRelevantChunks({
       userId,
       question,
-      limit: Number(process.env.RAG_TOP_K || 5),
     });
 
     if (!chunks.length) {

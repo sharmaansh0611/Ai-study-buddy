@@ -83,6 +83,10 @@ class LoginActivity : AppCompatActivity() {
             )
         }
 
+        textForgotPassword.setOnClickListener {
+            viewModel.sendPasswordReset(editEmail.text?.toString().orEmpty())
+        }
+
         buttonGoogleSignIn.setOnClickListener {
             googleSignInLauncher.launch(googleSignInClient.signInIntent)
         }
@@ -124,7 +128,11 @@ class LoginActivity : AppCompatActivity() {
                 viewModel.clearFeedback()
             }
 
-            if (state.isAuthenticated) {
+            if (state.shouldNavigateToPhoneNumber) {
+                startActivity(Intent(this, PhoneNumberActivity::class.java))
+                viewModel.clearFeedback()
+                finish()
+            } else if (state.isAuthenticated) {
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }

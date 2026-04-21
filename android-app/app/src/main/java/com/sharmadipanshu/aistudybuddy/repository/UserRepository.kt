@@ -17,7 +17,7 @@ class UserRepository @Inject constructor(
 
     private val usersCollection = firestore.collection(USERS_COLLECTION)
 
-    suspend fun createUserProfile(nameOverride: String? = null): User {
+    suspend fun createUserProfile(nameOverride: String? = null, phoneNumber: String? = null): User {
         val currentUser = firebaseAuth.currentUser
             ?: throw IllegalStateException("No authenticated user available")
 
@@ -29,6 +29,7 @@ class UserRepository @Inject constructor(
                 mapOf(
                     "userId" to currentUser.uid,
                     "name" to resolveDisplayName(currentUser.displayName, currentUser.email, nameOverride),
+                    "phone" to phoneNumber.orEmpty().trim(),
                     "email" to currentUser.email.orEmpty(),
                     "created_at" to FieldValue.serverTimestamp()
                 )
@@ -39,6 +40,7 @@ class UserRepository @Inject constructor(
             ?: User(
                 userId = currentUser.uid,
                 name = resolveDisplayName(currentUser.displayName, currentUser.email, nameOverride),
+                phone = phoneNumber.orEmpty().trim(),
                 email = currentUser.email.orEmpty(),
                 createdAt = Timestamp.now()
             )
@@ -57,13 +59,24 @@ class UserRepository @Inject constructor(
         return usersCollection.document(currentUser.uid).get().await().exists()
     }
 
-    suspend fun ensureUserProfile(nameOverride: String? = null): User {
-        return if (checkUserExists()) {
-            getUserProfile()
-                ?: createUserProfile(nameOverride)
+    suspend fun ensureUserProfile(nameOverride: String? = null, phoneNumber: String? = null): User {
+        val profile = if (checkUserExists()) {
+            getUserProfile() ?: createUserProfile(nameOverride, phoneNumber)
         } else {
-            createUserProfile(nameOverride)
+            createUserProfile(nameOverride, phoneNumber)
         }
+
+        if (!phoneNumber.isNullOrBlank() && profile.phone.isBlank()) {
+            updatePhoneNumber(phoneNumber)
+            return getUserProfile() ?: profile.copy(phone = phoneNumber.trim())
+        }
+
+        if (!nameOverride.isNullOrBlank() && profile.name.isBlank()) {
+            updateName(nameOverride)
+            return getUserProfile() ?: profile.copy(name = nameOverride.trim())
+        }
+
+        return profile
     }
 
     suspend fun getResolvedCurrentUserName(): String {
@@ -93,6 +106,24 @@ class UserRepository @Inject constructor(
             .filter { it.isNotBlank() }
             .joinToString(" ") { part -> part.replaceFirstChar { it.uppercase() } }
             .ifBlank { "AI Study Buddy User" }
+    }
+
+    suspend fun updatePhoneNumber(phoneNumber: String) {
+        val currentUser = firebaseAuth.currentUser
+            ?: throw IllegalStateException("No authenticated user available")
+
+        usersCollection.document(currentUser.uid)
+            .update(mapOf("phone" to phoneNumber.trim()))
+            .await()
+    }
+
+    suspend fun updateName(name: String) {
+        val currentUser = firebaseAuth.currentUser
+            ?: throw IllegalStateException("No authenticated user available")
+
+        usersCollection.document(currentUser.uid)
+            .update(mapOf("name" to name.trim()))
+            .await()
     }
 
     private companion object {

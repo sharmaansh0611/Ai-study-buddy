@@ -8,6 +8,7 @@ import com.google.firebase.firestore.PropertyName
 data class User(
     val userId: String = "",
     val name: String = "",
+    val phone: String = "",
     val email: String = "",
     @get:PropertyName("created_at")
     @set:PropertyName("created_at")
